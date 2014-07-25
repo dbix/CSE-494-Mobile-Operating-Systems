@@ -1,77 +1,85 @@
 package edu.asu.cse494_assignment_2;
 
-import java.util.Random;
-
 import android.app.Activity;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
+import android.widget.Toast;
 import android.view.View;
 import android.view.View.OnClickListener;
 
 public class MainActivity extends Activity {
 
-	private Button btnClear, btnData;
+	public enum Gender {
+		MALE, FEMALE, OTHER
+	}
+
+	private Button btnStop, btnStart;
 	private RelativeLayout relativeGraphLayout;
-	private Random randomGen = new Random();
-	private float randomFloats[];
+	private GraphView graphView;
+	private String[] horlabels, verlabels;
+	private SQLiteDatabase db;
+	private Runnable recDataThread;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		/* Data */
-		randomFloats = new float[20];
-		for (int i = 0; i < 20; i++) {
-			randomFloats[i] = i;
-		}
-
-		/* UI Elements */
-		btnClear = (Button) findViewById(R.id.btnClear);
-		btnData = (Button) findViewById(R.id.btnData);
-
-		String[] horlabels = { "0", "2", "4", "6", "8", "10", "12", "14", "16",
-				"18", "20" };
-		String[] verlabels = { "100", "90", "80", "70", "60", "50", "40", "30",
-				"20", "10", "0" };
-
-		final GraphView graphView = new GraphView(this, randomFloats,
-				"Graph View", horlabels, verlabels, GraphView.LINE);
-		graphView.setId(6);
-		graphView.setLayoutParams(new LayoutParams(android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
-				android.view.ViewGroup.LayoutParams.WRAP_CONTENT));
-
+		// Instantiate fields
+		horlabels = new String[] { "x-axis" };
+		verlabels = new String[] { "y-axis" };
+		graphView = new GraphView(this, new float[0], "Graph View", horlabels,
+				verlabels, GraphView.LINE);
+		btnStop = (Button) findViewById(R.id.btnClear);
+		btnStart = (Button) findViewById(R.id.btnData);
 		relativeGraphLayout = (RelativeLayout) findViewById(R.id.graphLayout);
+
+		// Add graph view to layout
+		graphView.setId(6);
+		graphView.setLayoutParams(new LayoutParams(
+				android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
+				android.view.ViewGroup.LayoutParams.WRAP_CONTENT));
 		relativeGraphLayout.addView(graphView);
 
-		/* Generate new random data when clicked */
-		btnData.setOnClickListener(new OnClickListener() {
-			@Override
+		// Create new database and start recording data when start is clicked
+		btnStart.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				String data = "";
-				for (int i = 0; i < 20; i++) {
-					randomFloats[i] = randomGen.nextFloat()
-							* randomGen.nextInt(100);
-					data = data + randomFloats[i] + " ";
-				}
-				System.out.println(data);
-				graphView.invalidate();
+				db = createDatabase("Seymour Butz", 42069, 69, Gender.FEMALE);
+				Runnable r = new Runnable() {
+					public void run() {
+						for (int i = 0; i < 10; i++) {
+							/* Insert accelerometer data */
+							db.insert(ACCOUNT_SERVICE, // Dummy parameters
+									ACCESSIBILITY_SERVICE, null);
+							try {
+								this.wait(100);
+							} catch (InterruptedException e) {
+								System.err.println(
+									"\nERROR: wait(100) in btnStart thread");
+								e.printStackTrace();
+							}
+							db.insert(table, nullColumnHack, values);
+							graphView.invalidate();
+						}
+					}
+				};
+				Thread t = new Thread(r);
+				t.start();
 			}
 		});
 
 		/* When clicked, clear the graph of all data */
-		btnClear.setOnClickListener(new OnClickListener() {
+		btnStop.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				for (int i = 0; i < 20; i++) {
-					randomFloats[i] = 0.0f;
-				}
-				graphView.setValues(randomFloats);
-				graphView.invalidate();
+				for (int i = 0; i < graphView.ge)
+				graphView.invalidate(); // Refresh graph view
 			}
 		});
 	}
@@ -85,14 +93,15 @@ public class MainActivity extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
+		return id == R.id.action_settings || super.onOptionsItemSelected(item);
 	}
 
-	public void showEditDataActivity() {
-		// Intent changeActivities = new Intent(this, EditDataActivity.class);
-		// startActivity(changeActivities);
+	private SQLiteDatabase createDatabase(String ptName, int ptID, int ptAge,
+			Gender ptGnd) {
+		String dbName = ptName + "_" + ptID + "_" + ptAge + "_" + ptGnd;
+		db = this.openOrCreateDatabase("myfriendsDB", MODE_PRIVATE, null);
+		/* Create database with name dbName */
+		return db;
 	}
+
 }

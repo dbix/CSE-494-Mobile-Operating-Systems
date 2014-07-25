@@ -17,7 +17,7 @@ public class GraphView extends View {
 	public static boolean LINE = true;
 
 	private Paint paint;
-	private float[] values;
+	private float[] data;
 	private String[] horlabels;
 	private String[] verlabels;
 	private String title;
@@ -56,7 +56,7 @@ public class GraphView extends View {
 		if (values == null)
 			values = new float[0];
 		else
-			this.values = values;
+			this.data = values;
 		if (title == null)
 			title = "";
 		else
@@ -71,6 +71,14 @@ public class GraphView extends View {
 			this.verlabels = verlabels;
 		this.type = type;
 		paint = new Paint();
+	}
+	
+	public void setData(float[] arr) {
+		this.data = arr;
+	}
+	
+	public float[] getData() {
+		return this.data;
 	}
 
 
@@ -120,10 +128,10 @@ public class GraphView extends View {
 		if (max != min) {
 			paint.setColor(Color.BLACK);
 			if (type == BAR) {
-				float datalength = values.length;
+				float datalength = data.length;
 				float colwidth = (width - (2 * border)) / datalength;
-				for (int i = 0; i < values.length; i++) {
-					float val = values[i] - min;
+				for (int i = 0; i < data.length; i++) {
+					float val = data[i] - min;
 					float rat = val / diff;
 					float h = graphheight * rat;
 					canvas.drawRect((i * colwidth) + horstart, (border - h)
@@ -131,12 +139,12 @@ public class GraphView extends View {
 							+ (colwidth - 1), height - (border - 1), paint);
 				}
 			} else {
-				float datalength = values.length;
+				float datalength = data.length;
 				float colwidth = (width - (2 * border)) / datalength;
 				float halfcol = colwidth / 2;
 				float lasth = 0;
-				for (int i = 0; i < values.length; i++) {
-					float val = values[i] - min;
+				for (int i = 0; i < data.length; i++) {
+					float val = data[i] - min;
 					float rat = val / diff;
 					float h = graphheight * rat;
 					if (i > 0)
@@ -155,9 +163,9 @@ public class GraphView extends View {
 
 	private float getMax() {
 		float largest = Integer.MIN_VALUE;
-		for (int i = 0; i < values.length; i++)
-			if (values[i] > largest)
-				largest = values[i];
+		for (int i = 0; i < data.length; i++)
+			if (data[i] > largest)
+				largest = data[i];
 
 		// largest = 3000;
 		return largest;
@@ -165,16 +173,12 @@ public class GraphView extends View {
 
 	private float getMin() {
 		float smallest = Integer.MAX_VALUE;
-		for (int i = 0; i < values.length; i++)
-			if (values[i] < smallest)
-				smallest = values[i];
+		for (int i = 0; i < data.length; i++)
+			if (data[i] < smallest)
+				smallest = data[i];
 
 		// smallest = 0;
 		return smallest;
-	}
-
-	public void setValues(float[] arr) {
-		this.values = arr;
 	}
 
 }
