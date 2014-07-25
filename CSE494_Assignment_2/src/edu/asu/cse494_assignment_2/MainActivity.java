@@ -1,4 +1,4 @@
-package edu.asu.cse494_assignment_1;
+package edu.asu.cse494_assignment_2;
 
 import java.util.Random;
 
@@ -42,8 +42,7 @@ public class MainActivity extends Activity {
 		final GraphView graphView = new GraphView(this, randomFloats,
 				"Graph View", horlabels, verlabels, GraphView.LINE);
 		graphView.setId(6);
-		graphView.setLayoutParams(new LayoutParams(
-				android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
+		graphView.setLayoutParams(new LayoutParams(android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
 				android.view.ViewGroup.LayoutParams.WRAP_CONTENT));
 
 		relativeGraphLayout = (RelativeLayout) findViewById(R.id.graphLayout);
@@ -90,5 +89,10 @@ public class MainActivity extends Activity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	public void showEditDataActivity() {
+		// Intent changeActivities = new Intent(this, EditDataActivity.class);
+		// startActivity(changeActivities);
 	}
 }
