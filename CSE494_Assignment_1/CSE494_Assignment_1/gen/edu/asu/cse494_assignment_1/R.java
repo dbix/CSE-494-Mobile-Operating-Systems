@@ -76,9 +76,9 @@ public final class R {
         public static final int AppTheme=0x7f060001;
     }
     public static final class styleable {
-        /** Attributes that can be used with a OldestGraphView.
+        /** Attributes that can be used with a GraphView.
          */
-        public static final int[] OldestGraphView = {
+        public static final int[] GraphView = {
             
         };
     };

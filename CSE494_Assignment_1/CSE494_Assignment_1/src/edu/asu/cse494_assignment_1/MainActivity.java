@@ -16,7 +16,7 @@ import android.view.View.OnClickListener;
 
 public class MainActivity extends Activity {
 
-	private OldestGraphView graphView;
+	private GraphView graphView;
 	private Button btnClear, btnData;
 	private RelativeLayout relativeGraphLayout;
 	private AlertDialog dataPrompt;
@@ -33,17 +33,21 @@ public class MainActivity extends Activity {
 		for (int i = 0; i < 20; i++) {
 			randomFloats[i] = (float) i;
 		}
-		
+
 		/* UI Elements */
 		btnClear = (Button) findViewById(R.id.btnClear);
-		btnData = (Button) findViewById(R.id.btnData);		
-		
-		String[] horlabels = {"0", "2", "4", "6", "8", "10", "12", "14", "16", "18", "20"};
-		String[] verlabels = {"100", "90", "80", "70", "60", "50", "40", "30", "20", "10", "0"};
-		
-		final GraphView graphView = new GraphView(this, randomFloats, "Graph View", horlabels, verlabels, OldestGraphView.BAR);
+		btnData = (Button) findViewById(R.id.btnData);
+
+		String[] horlabels = { "0", "2", "4", "6", "8", "10", "12", "14", "16",
+				"18", "20" };
+		String[] verlabels = { "100", "90", "80", "70", "60", "50", "40", "30",
+				"20", "10", "0" };
+
+		final GraphView graphView = new GraphView(this, randomFloats,
+				"Graph View", horlabels, verlabels, GraphView.LINE);
 		graphView.setId(6);
-		graphView.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+		graphView.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
+				LayoutParams.WRAP_CONTENT));
 
 		relativeGraphLayout = (RelativeLayout) findViewById(R.id.graphLayout);
 		relativeGraphLayout.addView(graphView);
@@ -53,7 +57,8 @@ public class MainActivity extends Activity {
 			public void onClick(View v) {
 				String data = "";
 				for (int i = 0; i < 20; i++) {
-					randomFloats[i] = randomGen.nextFloat() * randomGen.nextInt(100);
+					randomFloats[i] = randomGen.nextFloat()
+							* randomGen.nextInt(100);
 					data = data + randomFloats[i] + " ";
 				}
 				System.out.println(data);
