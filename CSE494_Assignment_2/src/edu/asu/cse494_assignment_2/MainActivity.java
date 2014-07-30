@@ -3,6 +3,8 @@ package edu.asu.cse494_assignment_2;
 import android.app.Activity;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,8 +14,12 @@ import android.widget.RelativeLayout.LayoutParams;
 import android.widget.Toast;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements SensorEventListener {
 
 	public enum Gender {
 		MALE, FEMALE, OTHER
@@ -25,52 +31,42 @@ public class MainActivity extends Activity {
 	private String[] horlabels, verlabels;
 	private SQLiteDatabase db;
 	private Runnable recDataThread;
+	private final float[] emptyData = { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+			0.0f, 0.0f, 0.0f, 0.0f };
+	float x[] = new float[128];
+	float y[] = new float[128];
+	float z[] = new float[128];
+	boolean isRecordingData = false;
+	int index = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		// Instantiate fields
-		horlabels = new String[] { "x-axis" };
-		verlabels = new String[] { "y-axis" };
-		graphView = new GraphView(this, new float[0], "Graph View", horlabels,
-				verlabels, GraphView.LINE);
+		// Get views
 		btnStop = (Button) findViewById(R.id.btnClear);
 		btnStart = (Button) findViewById(R.id.btnData);
 		relativeGraphLayout = (RelativeLayout) findViewById(R.id.graphLayout);
 
-		// Add graph view to layout
+		// Graph
+		for (int i = 0; i < 10; i++)
+			emptyData[i] = 0.0f;
+		horlabels = new String[] { "x-axis" };
+		verlabels = new String[] { "y-axis" };
+		graphView = new GraphView(this, emptyData, "Graph View", horlabels,
+				verlabels, GraphView.LINE);
 		graphView.setId(6);
 		graphView.setLayoutParams(new LayoutParams(
 				android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
 				android.view.ViewGroup.LayoutParams.WRAP_CONTENT));
 		relativeGraphLayout.addView(graphView);
-
+		
 		// Create new database and start recording data when start is clicked
 		btnStart.setOnClickListener(new OnClickListener() {
+			@Override
 			public void onClick(View v) {
-				db = createDatabase("Seymour Butz", 42069, 69, Gender.FEMALE);
-				Runnable r = new Runnable() {
-					public void run() {
-						for (int i = 0; i < 10; i++) {
-							/* Insert accelerometer data */
-							db.insert(ACCOUNT_SERVICE, // Dummy parameters
-									ACCESSIBILITY_SERVICE, null);
-							try {
-								this.wait(100);
-							} catch (InterruptedException e) {
-								System.err.println(
-									"\nERROR: wait(100) in btnStart thread");
-								e.printStackTrace();
-							}
-							db.insert(table, nullColumnHack, values);
-							graphView.invalidate();
-						}
-					}
-				};
-				Thread t = new Thread(r);
-				t.start();
+				recDataThread.run();
 			}
 		});
 
@@ -78,10 +74,25 @@ public class MainActivity extends Activity {
 		btnStop.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				for (int i = 0; i < graphView.ge)
-				graphView.invalidate(); // Refresh graph view
+				graphView.setData(emptyData);
+				if (isRecordingData == true) {
+					/* Stop recDataThread */
+				}
+				isRecordingData = false;
 			}
 		});
+	}
+
+	public void record() {
+		recDataThread = new Runnable() {
+			public void run() {
+				isRecordingData = true;
+				do {
+					/* get accelerometer data at 1 hz */
+					/* Insert data into database */
+				} while (isRecordingData == true);
+			}
+		};
 	}
 
 	@Override
@@ -96,12 +107,20 @@ public class MainActivity extends Activity {
 		return id == R.id.action_settings || super.onOptionsItemSelected(item);
 	}
 
-	private SQLiteDatabase createDatabase(String ptName, int ptID, int ptAge,
-			Gender ptGnd) {
-		String dbName = ptName + "_" + ptID + "_" + ptAge + "_" + ptGnd;
-		db = this.openOrCreateDatabase("myfriendsDB", MODE_PRIVATE, null);
-		/* Create database with name dbName */
-		return db;
+	@Override
+	public void onSensorChanged(SensorEvent event) {
+		index++;
+		if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+			x[index] = event.values[0];
+			y[index] = event.values[1];
+			z[index] = event.values[2];
+		}
+		if (index >= 127) index = 0;
+	}
+
+	@Override
+	public void onAccuracyChanged(Sensor sensor, int accuracy) {
+		// TODO Auto-generated method stub
 	}
 
 }

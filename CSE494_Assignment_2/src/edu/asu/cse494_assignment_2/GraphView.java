@@ -72,16 +72,35 @@ public class GraphView extends View {
 		this.type = type;
 		paint = new Paint();
 	}
-	
+
 	public void setData(float[] arr) {
 		this.data = arr;
 	}
-	
+
 	public float[] getData() {
 		return this.data;
 	}
 
+	private float getMax() {
+		float largest = Integer.MIN_VALUE;
+		for (int i = 0; i < data.length; i++)
+			if (data[i] > largest)
+				largest = data[i];
 
+		// largest = 3000;
+		return largest;
+	}
+
+	private float getMin() {
+		float smallest = Integer.MAX_VALUE;
+		for (int i = 0; i < data.length; i++)
+			if (data[i] < smallest)
+				smallest = data[i];
+
+		// smallest = 0;
+		return smallest;
+	}
+	
 	/*
 	 * @Override protected void onDraw(Canvas canvas) { super.onDraw(canvas); }
 	 */
@@ -99,6 +118,7 @@ public class GraphView extends View {
 
 		paint.setTextAlign(Align.LEFT);
 		int vers = verlabels.length - 1;
+
 		for (int i = 0; i < verlabels.length; i++) {
 			paint.setColor(Color.BLACK);
 			paint.setStrokeWidth(1);
@@ -107,7 +127,9 @@ public class GraphView extends View {
 			paint.setColor(Color.BLACK);
 			canvas.drawText(verlabels[i], 0, y, paint);
 		}
+
 		int hors = horlabels.length - 1;
+
 		for (int i = 0; i < horlabels.length; i++) {
 			paint.setColor(Color.BLACK);
 			float x = ((graphwidth / hors) * i) + horstart;
@@ -134,9 +156,11 @@ public class GraphView extends View {
 					float val = data[i] - min;
 					float rat = val / diff;
 					float h = graphheight * rat;
-					canvas.drawRect((i * colwidth) + horstart, (border - h)
-							+ graphheight, ((i * colwidth) + horstart)
-							+ (colwidth - 1), height - (border - 1), paint);
+					float left = (i * colwidth) + horstart;
+					float top = (border - h) + graphheight;
+					float bottom = ((i * colwidth) + horstart) + (colwidth - 1);
+					float right = height - (border - 1);
+					canvas.drawRect(left, top, bottom, right, paint);
 				}
 			} else {
 				float datalength = data.length;
@@ -147,38 +171,20 @@ public class GraphView extends View {
 					float val = data[i] - min;
 					float rat = val / diff;
 					float h = graphheight * rat;
-					if (i > 0)
+					if (i > 0) {
 						paint.setColor(Color.BLACK);
+					}
 					paint.setStrokeWidth(4.0f);
-
-					canvas.drawLine(((i - 1) * colwidth) + (horstart + 1)
-							+ halfcol, (border - lasth) + graphheight,
-							(i * colwidth) + (horstart + 1) + halfcol,
-							(border - h) + graphheight, paint);
+					float left = ((i - 1) * colwidth) + (horstart + 1)
+							+ halfcol;
+					float top = (border - lasth) + graphheight;
+					float bottom = (i * colwidth) + (horstart + 1) + halfcol;
+					float right = (border - h) + graphheight;
+					canvas.drawLine(left, top, bottom, right, paint);
 					lasth = h;
 				}
 			}
 		}
-	}
-
-	private float getMax() {
-		float largest = Integer.MIN_VALUE;
-		for (int i = 0; i < data.length; i++)
-			if (data[i] > largest)
-				largest = data[i];
-
-		// largest = 3000;
-		return largest;
-	}
-
-	private float getMin() {
-		float smallest = Integer.MAX_VALUE;
-		for (int i = 0; i < data.length; i++)
-			if (data[i] < smallest)
-				smallest = data[i];
-
-		// smallest = 0;
-		return smallest;
 	}
 
 }
