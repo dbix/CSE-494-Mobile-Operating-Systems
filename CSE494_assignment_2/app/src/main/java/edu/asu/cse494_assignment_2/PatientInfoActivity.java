@@ -1,4 +1,4 @@
-package edu.asu.cse494_assignment_1;
+package edu.asu.cse494_assignment_2;
 
 import android.app.Activity;
 import android.content.Intent;

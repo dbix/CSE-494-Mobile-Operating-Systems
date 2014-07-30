@@ -1,4 +1,4 @@
-package edu.asu.cse494_assignment_1;
+package edu.asu.cse494_assignment_2;
 
 import android.content.Context;
 import android.graphics.Canvas;

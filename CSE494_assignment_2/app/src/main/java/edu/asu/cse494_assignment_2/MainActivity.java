@@ -1,11 +1,9 @@
-package edu.asu.cse494_assignment_1;
+package edu.asu.cse494_assignment_2;
 
 import java.util.Random;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
