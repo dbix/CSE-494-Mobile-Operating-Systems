@@ -1,15 +1,15 @@
-package edu.asu.cse494_assignment_2;
-
+package net.pocketmagic.perseus;//add your own package name
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
-import android.util.AttributeSet;
 import android.view.View;
 
 /**
- * TODO: document your custom view class.
+ * GraphView creates a scaled line or bar graph with x and y axis labels.
+ * @author Arno den Hond
+ *
  */
 public class GraphView extends View {
 
@@ -23,36 +23,8 @@ public class GraphView extends View {
     private String title;
     private boolean type;
 
-    public GraphView(Context context) {
+    public GraphView(Context context, float[] values, String title, String[] horlabels, String[] verlabels, boolean type) {
         super(context);
-        init(null, 0);
-        setValues(new float[] { 0.0f }, "Graph View",
-                new String[] { "Horizontal Label" },
-                new String[] { "Vertical Label" }, false);
-    }
-
-    public GraphView(Context context, float[] values, String title,
-                     String[] horlabels, String[] verlabels, boolean type) {
-        super(context);
-        init(null, 0);
-        setValues(values, title, horlabels, verlabels, type);
-    }
-
-    public GraphView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(attrs, 0);
-    }
-
-    private void init(AttributeSet attrs, int defStyle) {
-        // Load attributes
-        setValues(new float[] { 0.0f }, "Graph View",
-                new String[] { "Horizontal Label" },
-                new String[] { "Vertical Label" }, false);
-    }
-
-    public void setValues(float[] values, String title, String[] horlabels,
-                          String[] verlabels, boolean type) {
-        // Load attributes
         if (values == null)
             values = new float[0];
         else
@@ -73,10 +45,11 @@ public class GraphView extends View {
         paint = new Paint();
     }
 
+    public void setValues(float[] newValues)
+    {
+        this.values = newValues;
+    }
 
-    /*
-     * @Override protected void onDraw(Canvas canvas) { super.onDraw(canvas); }
-     */
     @Override
     protected void onDraw(Canvas canvas) {
         float border = 20;
@@ -89,28 +62,27 @@ public class GraphView extends View {
         float graphheight = height - (2 * border);
         float graphwidth = width - (2 * border);
 
+
         paint.setTextAlign(Align.LEFT);
         int vers = verlabels.length - 1;
         for (int i = 0; i < verlabels.length; i++) {
-            paint.setColor(Color.BLACK);
-            paint.setStrokeWidth(1);
+            paint.setColor(Color.DKGRAY);
             float y = ((graphheight / vers) * i) + border;
             canvas.drawLine(horstart, y, width, y, paint);
-            paint.setColor(Color.BLACK);
+            paint.setColor(Color.WHITE);
             canvas.drawText(verlabels[i], 0, y, paint);
         }
         int hors = horlabels.length - 1;
         for (int i = 0; i < horlabels.length; i++) {
-            paint.setColor(Color.BLACK);
+            paint.setColor(Color.DKGRAY);
             float x = ((graphwidth / hors) * i) + horstart;
-            paint.setStrokeWidth(1);
             canvas.drawLine(x, height - border, x, border, paint);
             paint.setTextAlign(Align.CENTER);
-            if (i == horlabels.length - 1)
+            if (i==horlabels.length-1)
                 paint.setTextAlign(Align.RIGHT);
-            if (i == 0)
+            if (i==0)
                 paint.setTextAlign(Align.LEFT);
-            paint.setColor(Color.BLACK);
+            paint.setColor(Color.WHITE);
             canvas.drawText(horlabels[i], x, height - 4, paint);
         }
 
@@ -118,7 +90,7 @@ public class GraphView extends View {
         canvas.drawText(title, (graphwidth / 2) + horstart, border - 4, paint);
 
         if (max != min) {
-            paint.setColor(Color.DKGRAY);
+            paint.setColor(Color.LTGRAY);
             if (type == BAR) {
                 float datalength = values.length;
                 float colwidth = (width - (2 * border)) / datalength;
@@ -126,9 +98,7 @@ public class GraphView extends View {
                     float val = values[i] - min;
                     float rat = val / diff;
                     float h = graphheight * rat;
-                    canvas.drawRect((i * colwidth) + horstart, (border - h)
-                            + graphheight, ((i * colwidth) + horstart)
-                            + (colwidth - 1), height - (border - 1), paint);
+                    canvas.drawRect((i * colwidth) + horstart, (border - h) + graphheight, ((i * colwidth) + horstart) + (colwidth - 1), height - (border - 1), paint);
                 }
             } else {
                 float datalength = values.length;
@@ -140,13 +110,10 @@ public class GraphView extends View {
                     float rat = val / diff;
                     float h = graphheight * rat;
                     if (i > 0)
-                        paint.setColor(Color.BLACK);
-                    paint.setStrokeWidth(4.0f);
+                        paint.setColor(Color.GREEN);
+                    paint.setStrokeWidth(2.0f);
 
-                    canvas.drawLine(((i - 1) * colwidth) + (horstart + 1)
-                                    + halfcol, (border - lasth) + graphheight,
-                            (i * colwidth) + (horstart + 1) + halfcol,
-                            (border - h) + graphheight, paint);
+                    canvas.drawLine(((i - 1) * colwidth) + (horstart + 1) + halfcol, (border - lasth) + graphheight, (i * colwidth) + (horstart + 1) + halfcol, (border - h) + graphheight, paint);
                     lasth = h;
                 }
             }
@@ -159,7 +126,7 @@ public class GraphView extends View {
             if (values[i] > largest)
                 largest = values[i];
 
-        // largest = 3000;
+        //largest = 3000;
         return largest;
     }
 
@@ -169,12 +136,8 @@ public class GraphView extends View {
             if (values[i] < smallest)
                 smallest = values[i];
 
-        // smallest = 0;
+        //smallest = 0;
         return smallest;
-    }
-
-    public void setValues(float[] arr) {
-        this.values = arr;
     }
 
 }
