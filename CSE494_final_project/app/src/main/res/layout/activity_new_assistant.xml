@@ -1,0 +1,88 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="edu.asu.travelassistant.NewAssistantActivity">
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPostalAddress"
+        android:ems="10"
+        android:id="@+id/editTextStartAddress"
+        android:selectAllOnFocus="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:text="Start address" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPostalAddress"
+        android:ems="10"
+        android:id="@+id/editTextEndAddress"
+        android:selectAllOnFocus="true"
+        android:layout_below="@+id/editTextStartAddress"
+        android:layout_alignParentStart="true"
+        android:layout_alignEnd="@+id/editTextStartAddress"
+        android:text="Destination address" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="date"
+        android:ems="10"
+        android:id="@+id/editTextDate"
+        android:onClick="dateOnClick"
+        android:selectAllOnFocus="false"
+        android:layout_below="@+id/editTextEndAddress"
+        android:layout_alignParentStart="true"
+        android:text="Date"
+        android:layout_alignParentEnd="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:selectAllOnFocus="true"
+        android:inputType="time"
+        android:ems="10"
+        android:id="@+id/editTextTime"
+        android:layout_below="@+id/editTextDate"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:text="Time" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        style="@android:style/ButtonBar">
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:id="@+id/buttonCancel"
+            android:layout_alignBottom="@+id/buttonSave"
+            android:layout_alignParentStart="true"
+            android:layout_weight="0.5"
+            style="@android:style/ButtonBar" />
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Save"
+            android:id="@+id/buttonSave"
+            android:layout_alignParentBottom="true"
+            android:layout_alignEnd="@+id/editTextTime"
+            android:layout_weight="0.5"
+            style="@android:style/ButtonBar" />
+    </LinearLayout>
+</RelativeLayout>
